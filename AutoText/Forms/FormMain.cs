@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -250,7 +251,7 @@ namespace AutoText.Forms
 			_numberOfTriggers++;
 
 			Panel triggerPanel = new Panel();
-			triggerPanel.Size = new Size(380, 27);
+			triggerPanel.Size = new Size(340, 27);
 			triggerPanel.Location = new Point(6, 19 + _shift);
 			//			triggerPanel.BorderStyle = BorderStyle.FixedSingle;
 			triggerPanel.Name = "triggertsPanel" + _numberOfTriggers;
@@ -298,7 +299,7 @@ namespace AutoText.Forms
 			// 
 			// textBoxTriggerText
 			// 
-			textBoxTriggerText.Location = new Point(triggerPanel.Width - 240, 3);
+			textBoxTriggerText.Location = new Point(triggerPanel.Width - 210, 3);
 			textBoxTriggerText.MaxLength = 1000;
 			textBoxTriggerText.Name = "textBoxTriggerText";
 			textBoxTriggerText.Size = new Size(250, 20);
@@ -320,7 +321,7 @@ namespace AutoText.Forms
 			// 
 			comboBoxTriggerKey.DropDownStyle = ComboBoxStyle.DropDownList;
 			comboBoxTriggerKey.FormattingEnabled = true;
-			comboBoxTriggerKey.Location = new Point(triggerPanel.Width - 240, 3);
+			comboBoxTriggerKey.Location = new Point(triggerPanel.Width - 210, 3);
 			comboBoxTriggerKey.Name = "comboBoxTriggerKey";
 			comboBoxTriggerKey.Size = new Size(135, 21);
 			comboBoxTriggerKey.TabIndex = 17;
@@ -556,35 +557,42 @@ namespace AutoText.Forms
 				}
 			}
 
-			IEnumerable<string> availPhraseAbbreviations = _rules.Select(p => p.Abbreviation.AbbreviationText);
-			IEnumerable<string> matchedToDefNameAbbr =
-				availPhraseAbbreviations.Where(p => Regex.IsMatch(p, Constants.CommonConstants.NewPhraseDefaultAutotextRegex));
-
-			string nextNewPhraseAutotext;
-
-			if (!matchedToDefNameAbbr.Any())
+			if (dataGridViewPhrases[0, dataGridViewPhrases.RowCount - 1].Value.ToString() == "<autotext>")
 			{
-				nextNewPhraseAutotext = string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, "");
-			}
-			//if we have autotext template with no numbers
-			else if (matchedToDefNameAbbr.Count() == 1 && matchedToDefNameAbbr.First() == string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, ""))
-			{
-				nextNewPhraseAutotext = string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, "1");
+				DialogResult dialog = MessageBox.Show(this, "Not have save changes in the current phrase", "AutoText", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
 			else
 			{
-				int maxNum =
-					//Where we have some number
-					matchedToDefNameAbbr.Where(g => !string.IsNullOrEmpty(Regex.Match(g, Constants.CommonConstants.NewPhraseDefaultAutotextRegex).Groups[1].Value)).
-					//Get that number max value
-					Select(p => int.Parse(Regex.Match(p, Constants.CommonConstants.NewPhraseDefaultAutotextRegex).Groups[1].Value)).Max();
-				nextNewPhraseAutotext = string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, maxNum + 1);
-			}
+                IEnumerable<string> availPhraseAbbreviations = _rules.Select(p => p.Abbreviation.AbbreviationText);
+                IEnumerable<string> matchedToDefNameAbbr =
+                    availPhraseAbbreviations.Where(p => Regex.IsMatch(p, Constants.CommonConstants.NewPhraseDefaultAutotextRegex));
 
-			AddNewPhrase(nextNewPhraseAutotext);
-			dataGridViewPhrases.Rows.Cast<DataGridViewRow>().ToList().ForEach(p => p.Selected = false);
-			dataGridViewPhrases.Rows.Cast<DataGridViewRow>().Last().Selected = true;
-			SaveConfiguration();
+                string nextNewPhraseAutotext;
+
+                if (!matchedToDefNameAbbr.Any())
+                {
+                    nextNewPhraseAutotext = string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, "");
+                }
+                //if we have autotext template with no numbers
+                else if (matchedToDefNameAbbr.Count() == 1 && matchedToDefNameAbbr.First() == string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, ""))
+                {
+                    nextNewPhraseAutotext = string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, "1");
+                }
+                else
+                {
+                    int maxNum =
+                        //Where we have some number
+                        matchedToDefNameAbbr.Where(g => !string.IsNullOrEmpty(Regex.Match(g, Constants.CommonConstants.NewPhraseDefaultAutotextRegex).Groups[1].Value)).
+                        //Get that number max value
+                        Select(p => int.Parse(Regex.Match(p, Constants.CommonConstants.NewPhraseDefaultAutotextRegex).Groups[1].Value)).Max();
+                    nextNewPhraseAutotext = string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, maxNum + 1);
+                }
+
+                AddNewPhrase(nextNewPhraseAutotext);
+                dataGridViewPhrases.Rows.Cast<DataGridViewRow>().ToList().ForEach(p => p.Selected = false);
+                dataGridViewPhrases.Rows.Cast<DataGridViewRow>().Last().Selected = true;
+                SaveConfiguration();
+            }
 		}
 
 		private bool SavePhrase(int phraseIndex)
@@ -653,13 +661,14 @@ namespace AutoText.Forms
 		{
 			List<int> selRowsIndeces = GetDataGridViewSelectedRowIndeces();
 
-			if (selRowsIndeces.Count == 0)
+            if (selRowsIndeces.Count == 0)
 			{
 				MessageBox.Show(this, "Please select item first", "AutoText", MessageBoxButtons.OK, MessageBoxIcon.Stop);
 			}
 			else
 			{
-				int selIndex = selRowsIndeces.First();
+                MessageBox.Show(this, "Phrase correnctly save", "AutoText", MessageBoxButtons.OK);
+                int selIndex = selRowsIndeces.First();
 				SavePhrase(selIndex);
 			}
 		}
@@ -1269,5 +1278,11 @@ namespace AutoText.Forms
         {
 			this.WindowState = FormWindowState.Minimized;
         }
+
+		private void panel3_Paint(object sender, PaintEventArgs e)
+		{
+
+        }
+
     }
 }
