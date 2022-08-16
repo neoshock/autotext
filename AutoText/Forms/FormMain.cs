@@ -667,9 +667,17 @@ namespace AutoText.Forms
 			}
 			else
 			{
-                MessageBox.Show(this, "Phrase correnctly save", "AutoText", MessageBoxButtons.OK);
-                int selIndex = selRowsIndeces.First();
-				SavePhrase(selIndex);
+				if (textBoxDescription.Text == "<phrase description>" && textBoxPhraseContent.Text == "<phrase content>" 
+					&& textBoxAutotext.Text == "<autotext>")
+				{
+					MessageBox.Show(this, "Please fill the current inputs", "AutoText", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				}
+				else
+				{
+                    MessageBox.Show(this, "Phrase correnctly save", "AutoText", MessageBoxButtons.OK);
+                    int selIndex = selRowsIndeces.First();
+                    SavePhrase(selIndex);
+                }
 			}
 		}
 
