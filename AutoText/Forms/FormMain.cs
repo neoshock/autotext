@@ -250,10 +250,13 @@ namespace AutoText.Forms
 			_numberOfTriggers++;
 
 			Panel triggerPanel = new Panel();
-			triggerPanel.Size = new Size(520, 27);
+			triggerPanel.Size = new Size(380, 27);
 			triggerPanel.Location = new Point(6, 19 + _shift);
 			//			triggerPanel.BorderStyle = BorderStyle.FixedSingle;
 			triggerPanel.Name = "triggertsPanel" + _numberOfTriggers;
+
+			//Code add by Neoshock
+			triggerPanel.BackColor = Color.FromArgb(33, 150, 243);
 
 			ComboBox comboBoxTriggerType = new ComboBox();
 			TextBox textBoxTriggerText = new TextBox();
@@ -269,7 +272,7 @@ namespace AutoText.Forms
 			comboBoxTriggerType.DropDownStyle = ComboBoxStyle.DropDownList;
 			comboBoxTriggerType.FormattingEnabled = true;
 			comboBoxTriggerType.Items.AddRange(new object[] { "Key", "One of chars", "String" });
-			comboBoxTriggerType.Location = new Point(1, 2);
+			comboBoxTriggerType.Location = new Point(1, 3);
 			comboBoxTriggerType.Name = "comboBoxTriggerType";
 			comboBoxTriggerType.Size = new Size(100, 21);
 			comboBoxTriggerType.Font = new Font(comboBoxTriggerType.Font, FontStyle.Regular);
@@ -295,7 +298,7 @@ namespace AutoText.Forms
 			// 
 			// textBoxTriggerText
 			// 
-			textBoxTriggerText.Location = new Point(triggerPanel.Width - 410, 2);
+			textBoxTriggerText.Location = new Point(triggerPanel.Width - 240, 3);
 			textBoxTriggerText.MaxLength = 1000;
 			textBoxTriggerText.Name = "textBoxTriggerText";
 			textBoxTriggerText.Size = new Size(250, 20);
@@ -317,7 +320,7 @@ namespace AutoText.Forms
 			// 
 			comboBoxTriggerKey.DropDownStyle = ComboBoxStyle.DropDownList;
 			comboBoxTriggerKey.FormattingEnabled = true;
-			comboBoxTriggerKey.Location = new Point(triggerPanel.Width - 410, 2);
+			comboBoxTriggerKey.Location = new Point(triggerPanel.Width - 240, 3);
 			comboBoxTriggerKey.Name = "comboBoxTriggerKey";
 			comboBoxTriggerKey.Size = new Size(135, 21);
 			comboBoxTriggerKey.TabIndex = 17;
@@ -367,7 +370,7 @@ namespace AutoText.Forms
 			// buttonAddTriggerButton
 			// 
 			buttonAddTrigger.Font = new Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			buttonAddTrigger.Location = new Point(triggerPanel.Width - 55, 2);
+			buttonAddTrigger.Location = new Point(triggerPanel.Width - 55, 3);
 			buttonAddTrigger.Name = "buttonAddTriggerButton";
 			buttonAddTrigger.Size = new Size(24, 23);
 			buttonAddTrigger.TabIndex = 19;
@@ -379,7 +382,7 @@ namespace AutoText.Forms
 			// buttonDelTriggerButton
 			// 
 			buttonRemoveTrigger.Font = new Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			buttonRemoveTrigger.Location = new Point(triggerPanel.Width - 30, 2);
+			buttonRemoveTrigger.Location = new Point(triggerPanel.Width - 30, 3);
 			buttonRemoveTrigger.Name = "buttonDelTriggerButton";
 			buttonRemoveTrigger.Size = new Size(24, 23);
 			buttonRemoveTrigger.TabIndex = 19;
@@ -1251,5 +1254,20 @@ namespace AutoText.Forms
 			EditAllowedDisallowedPrograms allowedDisallowedPrograms = new EditAllowedDisallowedPrograms(ConfigHelper.GetCommonConfiguration().SpecificPrograms, ProgramsConfigSource.Global);
 			allowedDisallowedPrograms.ShowDialog(this);
 		}
-	}
+
+        private void menuStripMain_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void exitBtn_Click(object sender, EventArgs e)
+        {
+			this.Close();
+        }
+
+        private void minusBtn_Click(object sender, EventArgs e)
+        {
+			this.WindowState = FormWindowState.Minimized;
+        }
+    }
 }
