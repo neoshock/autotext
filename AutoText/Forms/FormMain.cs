@@ -535,6 +535,11 @@ namespace AutoText.Forms
 
 		private void buttonAddPhrase_Click(object sender, EventArgs e)
 		{
+			AddPhrase();
+		}
+
+		public void AddPhrase()
+        {
 			if (dataGridViewPhrases.RowCount > 0 && IsCurrentPhraseDirty())
 			{
 				DialogResult dl = MessageBox.Show(this, "Currently selected phrase has unsaved changes. Save changes?", "AutoText",
@@ -563,36 +568,36 @@ namespace AutoText.Forms
 			}
 			else
 			{
-                IEnumerable<string> availPhraseAbbreviations = _rules.Select(p => p.Abbreviation.AbbreviationText);
-                IEnumerable<string> matchedToDefNameAbbr =
-                    availPhraseAbbreviations.Where(p => Regex.IsMatch(p, Constants.CommonConstants.NewPhraseDefaultAutotextRegex));
+				IEnumerable<string> availPhraseAbbreviations = _rules.Select(p => p.Abbreviation.AbbreviationText);
+				IEnumerable<string> matchedToDefNameAbbr =
+					availPhraseAbbreviations.Where(p => Regex.IsMatch(p, Constants.CommonConstants.NewPhraseDefaultAutotextRegex));
 
-                string nextNewPhraseAutotext;
+				string nextNewPhraseAutotext;
 
-                if (!matchedToDefNameAbbr.Any())
-                {
-                    nextNewPhraseAutotext = string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, "");
-                }
-                //if we have autotext template with no numbers
-                else if (matchedToDefNameAbbr.Count() == 1 && matchedToDefNameAbbr.First() == string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, ""))
-                {
-                    nextNewPhraseAutotext = string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, "1");
-                }
-                else
-                {
-                    int maxNum =
-                        //Where we have some number
-                        matchedToDefNameAbbr.Where(g => !string.IsNullOrEmpty(Regex.Match(g, Constants.CommonConstants.NewPhraseDefaultAutotextRegex).Groups[1].Value)).
-                        //Get that number max value
-                        Select(p => int.Parse(Regex.Match(p, Constants.CommonConstants.NewPhraseDefaultAutotextRegex).Groups[1].Value)).Max();
-                    nextNewPhraseAutotext = string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, maxNum + 1);
-                }
+				if (!matchedToDefNameAbbr.Any())
+				{
+					nextNewPhraseAutotext = string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, "");
+				}
+				//if we have autotext template with no numbers
+				else if (matchedToDefNameAbbr.Count() == 1 && matchedToDefNameAbbr.First() == string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, ""))
+				{
+					nextNewPhraseAutotext = string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, "1");
+				}
+				else
+				{
+					int maxNum =
+						//Where we have some number
+						matchedToDefNameAbbr.Where(g => !string.IsNullOrEmpty(Regex.Match(g, Constants.CommonConstants.NewPhraseDefaultAutotextRegex).Groups[1].Value)).
+						//Get that number max value
+						Select(p => int.Parse(Regex.Match(p, Constants.CommonConstants.NewPhraseDefaultAutotextRegex).Groups[1].Value)).Max();
+					nextNewPhraseAutotext = string.Format(Constants.CommonConstants.NewPhraseDefaultAutotext, maxNum + 1);
+				}
 
-                AddNewPhrase(nextNewPhraseAutotext);
-                dataGridViewPhrases.Rows.Cast<DataGridViewRow>().ToList().ForEach(p => p.Selected = false);
-                dataGridViewPhrases.Rows.Cast<DataGridViewRow>().Last().Selected = true;
-                SaveConfiguration();
-            }
+				AddNewPhrase(nextNewPhraseAutotext);
+				dataGridViewPhrases.Rows.Cast<DataGridViewRow>().ToList().ForEach(p => p.Selected = false);
+				dataGridViewPhrases.Rows.Cast<DataGridViewRow>().Last().Selected = true;
+				SaveConfiguration();
+			}
 		}
 
 		private bool SavePhrase(int phraseIndex)
@@ -659,26 +664,32 @@ namespace AutoText.Forms
 
 		private void buttonSavePhrase_Click(object sender, EventArgs e)
 		{
+			SavePharse();
+		}
+
+		public void SavePharse() {
+
 			List<int> selRowsIndeces = GetDataGridViewSelectedRowIndeces();
 
-            if (selRowsIndeces.Count == 0)
+			if (selRowsIndeces.Count == 0)
 			{
 				MessageBox.Show(this, "Please select item first", "AutoText", MessageBoxButtons.OK, MessageBoxIcon.Stop);
 			}
 			else
 			{
-				if (textBoxDescription.Text == "<phrase description>" && textBoxPhraseContent.Text == "<phrase content>" 
+				if (textBoxDescription.Text == "<phrase description>" && textBoxPhraseContent.Text == "<phrase content>"
 					&& textBoxAutotext.Text == "<autotext>")
 				{
 					MessageBox.Show(this, "Please fill the current inputs", "AutoText", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				}
 				else
 				{
-                    MessageBox.Show(this, "Phrase correnctly save", "AutoText", MessageBoxButtons.OK);
-                    int selIndex = selRowsIndeces.First();
-                    SavePhrase(selIndex);
-                }
+					MessageBox.Show(this, "Phrase correnctly save", "AutoText", MessageBoxButtons.OK);
+					int selIndex = selRowsIndeces.First();
+					SavePhrase(selIndex);
+				}
 			}
+
 		}
 
 		private void RemoveSelectedPhrase()
@@ -926,16 +937,41 @@ namespace AutoText.Forms
 
 		private void FormMain_KeyDown(object sender, KeyEventArgs e)
 		{
+
+			if (e.KeyData == (Keys.G | Keys.Control))
+			{
+
+				SavePharse();
+
+			}
+			else if (e.KeyCode == Keys.Escape)
+			{
+				exitApp();
+			}
+
+			else if (e.KeyData == (Keys.D | Keys.Control))
+			{
+
+				WindowState = FormWindowState.Minimized;
+
+			}
+
+
+			else if (e.KeyData == (Keys.S | Keys.Control))
+			{
+
+				AddPhrase();
+
+			}
+
+
 			if (e.Control && (e.KeyCode == Keys.S))
 			{
 				int selIndex = GetDataGridViewSelectedRowIndeces().First();
 				SavePhrase(selIndex);
 				e.Handled = true;
 			}
-			else if (e.KeyCode == Keys.Escape)
-			{
-				WindowState = FormWindowState.Minimized;
-			}
+			
 		}
 
 		private AutotextRuleConfiguration GetCurrentPhrase()
@@ -1207,6 +1243,8 @@ namespace AutoText.Forms
 
 		private void FormMain_Load(object sender, EventArgs e)
 		{
+
+
 		}
 
 		private void keyLogWindowToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1279,8 +1317,29 @@ namespace AutoText.Forms
 
         private void exitBtn_Click(object sender, EventArgs e)
         {
-			this.Close();
-        }
+			exitApp();
+	
+		}
+
+		public void exitApp()
+        {
+
+			DialogResult dl = MessageBox.Show(this, "You want to exit the application,Are you sure?", "AutoText",
+				MessageBoxButtons.YesNo,
+				MessageBoxIcon.Question);
+
+			switch (dl)
+			{
+				case DialogResult.Cancel:
+					return;
+					break;
+				case DialogResult.Yes:
+					Application.Exit();
+					break;
+
+			}
+
+		}
 
         private void minusBtn_Click(object sender, EventArgs e)
         {
@@ -1292,5 +1351,9 @@ namespace AutoText.Forms
 
         }
 
+        private void buttonAddPhrase_KeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
     }
 }

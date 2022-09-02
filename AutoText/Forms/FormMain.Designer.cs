@@ -360,6 +360,7 @@ namespace AutoText.Forms
             this.buttonAddPhrase.TabIndex = 23;
             this.buttonAddPhrase.UseVisualStyleBackColor = true;
             this.buttonAddPhrase.Click += new System.EventHandler(this.buttonAddPhrase_Click);
+            this.buttonAddPhrase.KeyDown += new System.Windows.Forms.KeyEventHandler(this.buttonAddPhrase_KeyDown);
             // 
             // buttonSavePhrase
             // 
