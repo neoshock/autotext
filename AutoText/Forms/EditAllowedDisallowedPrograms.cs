@@ -41,7 +41,7 @@ namespace AutoText.Forms
 		private ProgramsConfigSource _configSource;
 
 
-		public EditAllowedDisallowedPrograms(AutotextRuleSpecificPrograms autotextRuleSpecificPrograms, ProgramsConfigSource configSource)
+		public EditAllowedDisallowedPrograms(AutotextRuleSpecificPrograms autotextRuleSpecificPrograms, ProgramsConfigSource configSource, bool visible)
 		{
 			InitializeComponent();
 
@@ -78,6 +78,49 @@ namespace AutoText.Forms
 			if (_configSource == ProgramsConfigSource.Global)
 			{
 				Text += " (Global)";
+			}
+
+			if (visible)
+			{
+				checkBoxPerProgramRestrictions.Text = "Enable per program restrictions";
+				radioButtonAllow.Text = "Allow only in following programs";
+				radioButtonDisallow.Text = "Disallow only in following programs";
+				dataGridViewPrograms.Columns[0].HeaderText = "Program";
+				dataGridViewPrograms.Columns[1].HeaderText = "Condition";
+				dataGridViewPrograms.Columns[2].HeaderText = "Title";
+				label1.Text = "Program";
+				label2.Text = "with";
+				buttonAdd.Text = "Add";
+				buttonDelete.Text = "Delete";
+				buttonSave.Text = "Save";
+
+				comboBoxConditionsList.Items[0] = "any window title";
+				comboBoxConditionsList.Items[1] = "window title that exactly matches";
+				comboBoxConditionsList.Items[2] = "window title that starts with";
+				comboBoxConditionsList.Items[3] = "window title that ends with";
+				comboBoxConditionsList.Items[4] = "window title that contain";
+
+			}
+			else
+			{
+				checkBoxPerProgramRestrictions.Text = "Habilitar restricciones por programa";
+				radioButtonAllow.Text = "Permitir solo en los siguientes programas";
+				radioButtonDisallow.Text = "Denegar solo en los siguientes programas";
+				dataGridViewPrograms.Columns[0].HeaderText = "Programa";
+				dataGridViewPrograms.Columns[1].HeaderText = "Condición";
+				dataGridViewPrograms.Columns[2].HeaderText = "Título";
+				label1.Text = "Programa";
+				label2.Text = "con";
+				buttonAdd.Text = "Añadir";
+				buttonDelete.Text = "Eliminar";
+				buttonSave.Text = "Guardar";
+
+				comboBoxConditionsList.Items[0] = "cualquier título de ventana";
+				comboBoxConditionsList.Items[1] = "título de la ventana que coincida exactamente";
+				comboBoxConditionsList.Items[2] = "título de la ventana que comienza con";
+				comboBoxConditionsList.Items[3] = "título de la ventana que termina con";
+				comboBoxConditionsList.Items[4] = "título de la ventana que contiene";
+
 			}
 		}
 
@@ -139,7 +182,6 @@ namespace AutoText.Forms
 			}
 
 			TitleCondition titleMatchCondition;
-
 			switch (comboBoxConditionsList.SelectedItem.ToString())
 			{
 				case "any window title":
@@ -161,6 +203,7 @@ namespace AutoText.Forms
 				default:
 					throw new InvalidOperationException("Can't resolve title match condition");
 			}
+				
 
 			ProgramEntry selEntry = (ProgramEntry)comboBoxProgramsList.SelectedItem;
 

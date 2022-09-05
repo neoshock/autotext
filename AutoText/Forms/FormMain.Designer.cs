@@ -86,6 +86,8 @@ namespace AutoText.Forms
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.btnCambioIngles = new System.Windows.Forms.Button();
+            this.btnCambioEspaniol = new System.Windows.Forms.Button();
             this.contextMenuStripPhraseContentEdit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewPhrases)).BeginInit();
             this.menuStripMain.SuspendLayout();
@@ -298,11 +300,10 @@ namespace AutoText.Forms
             // checkBoxAutotextCaseSensetive
             // 
             this.checkBoxAutotextCaseSensetive.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBoxAutotextCaseSensetive.AutoSize = true;
             this.checkBoxAutotextCaseSensetive.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBoxAutotextCaseSensetive.Location = new System.Drawing.Point(388, 86);
             this.checkBoxAutotextCaseSensetive.Name = "checkBoxAutotextCaseSensetive";
-            this.checkBoxAutotextCaseSensetive.Size = new System.Drawing.Size(130, 24);
+            this.checkBoxAutotextCaseSensetive.Size = new System.Drawing.Size(287, 24);
             this.checkBoxAutotextCaseSensetive.TabIndex = 13;
             this.checkBoxAutotextCaseSensetive.Text = "Case sensitive";
             this.checkBoxAutotextCaseSensetive.UseVisualStyleBackColor = true;
@@ -310,13 +311,12 @@ namespace AutoText.Forms
             // checkBoxSubstitute
             // 
             this.checkBoxSubstitute.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBoxSubstitute.AutoSize = true;
             this.checkBoxSubstitute.Checked = true;
             this.checkBoxSubstitute.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxSubstitute.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBoxSubstitute.Location = new System.Drawing.Point(388, 116);
             this.checkBoxSubstitute.Name = "checkBoxSubstitute";
-            this.checkBoxSubstitute.Size = new System.Drawing.Size(174, 24);
+            this.checkBoxSubstitute.Size = new System.Drawing.Size(215, 24);
             this.checkBoxSubstitute.TabIndex = 20;
             this.checkBoxSubstitute.Text = "Substitute by phrase";
             this.checkBoxSubstitute.UseVisualStyleBackColor = true;
@@ -652,10 +652,32 @@ namespace AutoText.Forms
             this.panel4.Size = new System.Drawing.Size(720, 182);
             this.panel4.TabIndex = 34;
             // 
+            // btnCambioIngles
+            // 
+            this.btnCambioIngles.Location = new System.Drawing.Point(804, 50);
+            this.btnCambioIngles.Name = "btnCambioIngles";
+            this.btnCambioIngles.Size = new System.Drawing.Size(75, 23);
+            this.btnCambioIngles.TabIndex = 36;
+            this.btnCambioIngles.Text = "English";
+            this.btnCambioIngles.UseVisualStyleBackColor = true;
+            this.btnCambioIngles.Click += new System.EventHandler(this.btnCambioIngles_Click);
+            // 
+            // btnCambioEspaniol
+            // 
+            this.btnCambioEspaniol.Location = new System.Drawing.Point(925, 50);
+            this.btnCambioEspaniol.Name = "btnCambioEspaniol";
+            this.btnCambioEspaniol.Size = new System.Drawing.Size(75, 23);
+            this.btnCambioEspaniol.TabIndex = 37;
+            this.btnCambioEspaniol.Text = "Español";
+            this.btnCambioEspaniol.UseVisualStyleBackColor = true;
+            this.btnCambioEspaniol.Click += new System.EventHandler(this.btnCambioEspaniol_Click);
+            // 
             // FormMain
             // 
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(250)))), ((int)(((byte)(255)))));
             this.ClientSize = new System.Drawing.Size(1000, 600);
+            this.Controls.Add(this.btnCambioEspaniol);
+            this.Controls.Add(this.btnCambioIngles);
             this.Controls.Add(this.menuStripMain);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -748,6 +770,8 @@ namespace AutoText.Forms
         private Panel panel2;
         private Panel panel3;
         private Panel panel4;
+        private Button btnCambioIngles;
+        private Button btnCambioEspaniol;
     }
 }
 

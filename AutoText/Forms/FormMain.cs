@@ -55,6 +55,8 @@ namespace AutoText.Forms
 			InitializeComponent();
 			Sender.StartSender();
 			Sender.DataSent += Sender_DataSent;
+
+			btnCambioIngles.Hide();
 		}
 
 		void Sender_DataSent(object sender, EventArgs e)
@@ -542,9 +544,19 @@ namespace AutoText.Forms
         {
 			if (dataGridViewPhrases.RowCount > 0 && IsCurrentPhraseDirty())
 			{
-				DialogResult dl = MessageBox.Show(this, "Currently selected phrase has unsaved changes. Save changes?", "AutoText",
-					MessageBoxButtons.YesNoCancel,
+				DialogResult dl;
+				if (btnCambioEspaniol.Visible)
+				{
+					dl = MessageBox.Show(this, "Currently selected phrase has unsaved changes. Save changes?", "AutoText",
+					   MessageBoxButtons.YesNoCancel,
+					   MessageBoxIcon.Question);
+				}
+				else
+				{
+					dl = MessageBox.Show(this, "La frase seleccionada actualmente tiene cambios sin guardar. Guardar cambios?", "AutoText",
+				   MessageBoxButtons.YesNoCancel,
 					MessageBoxIcon.Question);
+				}
 
 				switch (dl)
 				{
@@ -564,7 +576,14 @@ namespace AutoText.Forms
 
 			if (dataGridViewPhrases[0, dataGridViewPhrases.RowCount - 1].Value.ToString() == "<autotext>")
 			{
-				DialogResult dialog = MessageBox.Show(this, "Not have save changes in the current phrase", "AutoText", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				if (btnCambioIngles.Visible == false)
+				{
+					DialogResult dialog = MessageBox.Show(this, "Not have save changes in the current phrase", "AutoText", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				}
+				else
+				{
+					DialogResult dialog = MessageBox.Show(this, "No tiene guardado cambios en la actual frase", "AutoText", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				}
 			}
 			else
 			{
@@ -651,9 +670,18 @@ namespace AutoText.Forms
 			};
 
 			newConfig.RemoveAbbr = true;
-			newConfig.Phrase = "<phrase content>";
+			if (btnCambioEspaniol.Visible)
+			{
+				newConfig.Phrase = "<phrase content>";
+				newConfig.Description = "<phrase description>";
+			}
+			else
+			{
+				newConfig.Phrase = "<Contenido de frase>";
+				newConfig.Description = "<Descripcion de frase>";
+			}
 			newConfig.Macros = new AutotextRuleMacrosMode() { Mode = MacrosMode.Execute };
-			newConfig.Description = "<phrase description>";
+
 			newConfig.SpecificPrograms = new AutotextRuleSpecificPrograms()
 			{
 				Programs = new List<AutotextRuleSpecificProgram>()
@@ -668,7 +696,6 @@ namespace AutoText.Forms
 		}
 
 		public void SavePharse() {
-
 			List<int> selRowsIndeces = GetDataGridViewSelectedRowIndeces();
 
 			if (selRowsIndeces.Count == 0)
@@ -684,9 +711,14 @@ namespace AutoText.Forms
 				}
 				else
 				{
-					MessageBox.Show(this, "Phrase correnctly save", "AutoText", MessageBoxButtons.OK);
+					if (btnCambioIngles.Visible == false)
+						MessageBox.Show(this, "Phrase correnctly save", "AutoText", MessageBoxButtons.OK);
+					else
+						MessageBox.Show(this, "Frase guardada correctamente", "AutoText", MessageBoxButtons.OK);
+
 					int selIndex = selRowsIndeces.First();
 					SavePhrase(selIndex);
+
 				}
 			}
 
@@ -696,7 +728,20 @@ namespace AutoText.Forms
 		{
 			if (_rules.Any())
 			{
-				if (MessageBox.Show(this, "Are you sure that you want to delete selected phrase?", "AutoText", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+
+				String alertaBorrar;
+
+				if (btnCambioEspaniol.Visible)
+				{
+					alertaBorrar = "Are you sure that you want to delete selectd phrase";
+				}
+				else
+				{
+					alertaBorrar = "¿Estás seguro de que quieres eliminar la frase seleccionada?";
+
+				}
+
+				if (MessageBox.Show(this, alertaBorrar, "AutoText", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
 				{
 					_rulesBindingList.RemoveAt(_curSelectedPhraseIndex);
 
@@ -987,7 +1032,14 @@ namespace AutoText.Forms
 
 			currentPhrase.RemoveAbbr = checkBoxSubstitute.Checked;
 			currentPhrase.Phrase = textBoxPhraseContent.Text;
-			currentPhrase.Macros = new AutotextRuleMacrosMode() { Mode = (MacrosMode)Enum.Parse(typeof(MacrosMode), comboBoxProcessMacros.SelectedItem.ToString()) };
+
+			string macrosModo;
+			if (comboBoxProcessMacros.SelectedItem.ToString() == "Ejecutar")
+				macrosModo = "Execute";
+			else
+				macrosModo = "Skip";
+
+			currentPhrase.Macros = new AutotextRuleMacrosMode() { Mode = (MacrosMode)Enum.Parse(typeof(MacrosMode), macrosModo) };
 			currentPhrase.Description = textBoxDescription.Text;
 			List<Panel> triggersPanels = groupBoxTriggers.Controls.Cast<Panel>().ToList();
 
@@ -1065,9 +1117,19 @@ namespace AutoText.Forms
 		{
 			if (dataGridViewPhrases.RowCount > 0 && GetDataGridViewSelectedRowIndeces().Any() && dataGridViewPhrases.ClientRectangle.Contains(PointToClient(Control.MousePosition)) && IsCurrentPhraseDirty())
 			{
-				DialogResult dl = MessageBox.Show(this, "Currently selected phrase has unsaved changes. Save changes?", "Confirmation",
-					MessageBoxButtons.YesNoCancel,
+				DialogResult dl;
+				if (btnCambioEspaniol.Visible)
+				{
+					dl = MessageBox.Show(this, "Currently selected phrase has unsaved changes. Save changes?", "AutoText",
+					   MessageBoxButtons.YesNoCancel,
+					   MessageBoxIcon.Question);
+				}
+				else
+				{
+					dl = MessageBox.Show(this, "La frase seleccionada actualmente tiene cambios sin guardar. Guardar cambios?", "AutoText",
+				   MessageBoxButtons.YesNoCancel,
 					MessageBoxIcon.Question);
+				}
 
 				switch (dl)
 				{
@@ -1201,9 +1263,19 @@ namespace AutoText.Forms
 		{
 			if (dataGridViewPhrases.RowCount > 0 && IsCurrentPhraseDirty())
 			{
-				DialogResult dl = MessageBox.Show(this, "Currently selected phrase has unsaved changes. Save changes?", "AutoText",
-					MessageBoxButtons.YesNoCancel,
+				DialogResult dl;
+				if (btnCambioEspaniol.Visible)
+				{
+					dl = MessageBox.Show(this, "Currently selected phrase has unsaved changes. Save changes?", "AutoText",
+					   MessageBoxButtons.YesNoCancel,
+					   MessageBoxIcon.Question);
+				}
+				else
+				{
+					dl = MessageBox.Show(this, "La frase seleccionada actualmente tiene cambios sin guardar. Guardar cambios?", "AutoText",
+				   MessageBoxButtons.YesNoCancel,
 					MessageBoxIcon.Question);
+				}
 
 				switch (dl)
 				{
@@ -1292,7 +1364,7 @@ namespace AutoText.Forms
 
 		private void buttonAllowedDisallowedPrograms_Click(object sender, EventArgs e)
 		{
-			EditAllowedDisallowedPrograms allowedDisallowedPrograms = new EditAllowedDisallowedPrograms(_rules[_curSelectedPhraseIndex].SpecificPrograms, ProgramsConfigSource.Phrase);
+			EditAllowedDisallowedPrograms allowedDisallowedPrograms = new EditAllowedDisallowedPrograms(_rules[_curSelectedPhraseIndex].SpecificPrograms, ProgramsConfigSource.Phrase, visible: btnCambioEspaniol.Visible);
 			allowedDisallowedPrograms.ShowDialog(this);
 		}
 
@@ -1306,7 +1378,7 @@ namespace AutoText.Forms
 
 		private void globalAllowedDisallowedProgramsListToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			EditAllowedDisallowedPrograms allowedDisallowedPrograms = new EditAllowedDisallowedPrograms(ConfigHelper.GetCommonConfiguration().SpecificPrograms, ProgramsConfigSource.Global);
+			EditAllowedDisallowedPrograms allowedDisallowedPrograms = new EditAllowedDisallowedPrograms(ConfigHelper.GetCommonConfiguration().SpecificPrograms, ProgramsConfigSource.Global, btnCambioEspaniol.Visible);
 			allowedDisallowedPrograms.ShowDialog(this);
 		}
 
@@ -1323,10 +1395,18 @@ namespace AutoText.Forms
 
 		public void exitApp()
         {
+			DialogResult dl;
+			if (btnCambioEspaniol.Visible){ 
 
-			DialogResult dl = MessageBox.Show(this, "You want to exit the application,Are you sure?", "AutoText",
+			 dl = MessageBox.Show(this, "You want to exit the application,Are you sure?", "AutoText",
 				MessageBoxButtons.YesNo,
 				MessageBoxIcon.Question);
+			}else
+            {
+				dl = MessageBox.Show(this, "Quiere salir de la aplicación, ¿está seguro?", "AutoText",
+				 MessageBoxButtons.YesNo,
+				 MessageBoxIcon.Question);
+			}				
 
 			switch (dl)
 			{
@@ -1355,5 +1435,58 @@ namespace AutoText.Forms
         {
 
         }
-    }
+
+        private void btnCambioIngles_Click(object sender, EventArgs e)
+        {
+			btnCambioIngles.Hide();
+			btnCambioEspaniol.Show();
+			label2.Text = "Pharses";
+			dataGridViewPhrases.Columns[1].HeaderText = "Description";
+			fileToolStripMenuItem.Text = "File";
+			closeToolStripMenuItem.Text = "Extit";
+			toolsToolStripMenuItem1.Text = "Tools";
+			globalAllowedDisallowedProgramsListToolStripMenuItem.Text = "Global Allowed/Disallowed Programs List";
+			helpToolStripMenuItem.Text = "Help";
+			aboutToolStripMenuItem.Text = "About";
+			label3.Text = "Pharse Description";
+			buttonAllowedDisallowedPrograms.Text = "Allowed/Disallowed Programs List";
+			label1.Text = "Pharse";
+			comboBoxProcessMacros.Items[0] = "Execute";
+			comboBoxProcessMacros.Items[1] = "Skip";
+			label4.Text = "Phrase content(right-click to insert macros)";
+			groupBoxTriggers.Text = "Pharse triggers";
+			label5.Text = "Pharse macros mode";
+			checkBoxAutotextCaseSensetive.Text = "Case Sensitive";
+			checkBoxSubstitute.Text = "Substitude by pharse";
+			buttonSavePhrase.Text = "Save";
+		}
+
+        private void btnCambioEspaniol_Click(object sender, EventArgs e)
+        {
+			btnCambioEspaniol.Hide();
+			btnCambioIngles.Show();
+			label2.Text = "Frases";
+			dataGridViewPhrases.Columns[1].HeaderText = "Descripcion";
+			fileToolStripMenuItem.Text = "Archivo";
+			closeToolStripMenuItem.Text = "Salir";
+			toolsToolStripMenuItem1.Text = "Herramientas";
+			globalAllowedDisallowedProgramsListToolStripMenuItem.Text = "Globalizar Permitir/ Denegar Lista de Programas";
+			helpToolStripMenuItem.Text = "Ayuda";
+			aboutToolStripMenuItem.Text = "Acerca de";
+			label3.Text = "Descripcion de frase";
+			buttonAllowedDisallowedPrograms.Text = "Permitir/ Denegar Lista de Programas";
+			label1.Text = "Frase modo macros";
+			comboBoxProcessMacros.Items[0] = "Ejecutar";
+			comboBoxProcessMacros.Items[1] = "Saltar";
+			label4.Text = "Contenido de frases (click deerecho para insertar macros)";
+			groupBoxTriggers.Text = "Generar frase";
+			label5.Text = "Frase de autotext";
+			checkBoxAutotextCaseSensetive.Text = "Distinguir Mayúsculas/Minúsculas";
+			checkBoxSubstitute.Text = "Sustituir por frase";
+			buttonSavePhrase.Text = "Guardar";
+
+			//Permitir denegar progrmas
+
+		}
+	}
 }
